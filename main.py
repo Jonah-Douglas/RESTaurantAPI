@@ -17,7 +17,9 @@ orders = {}
 class Order(Resource):
     def put(self, order_id):
         order = parseOrder(request.form['order'])
-        if validateOrder(order):
+        validateOrder(order)
+        if order != 0:
+            prepResponse(order)
             # print(request.form['order'])
             # args = order_put_args.parse_args(order_id)
             # orders[order_id] = args
@@ -40,14 +42,20 @@ def parseOrder(unedited_order):
     # build string for meal name
     for i in range(len(unedited_order)):
         if unedited_order[i] != ' ':
-            meal.append(unedited_order[i])
+            if  unedited_order[i].isalpha():
+                meal.append(unedited_order[i])
+            else:
+                return 0
         else:
             break
     
     # retrieve customer options (assumes input now is: name option option...)
     for i in range(len(unedited_order)):
         if unedited_order[i] != ' ' and unedited_order[i].isnumeric():
-            options.append(int(unedited_order[i]))
+            if 1 <= int(unedited_order[i]) <= 4:
+                options.append(int(unedited_order[i]))
+            else:
+                return 0
 
     mealname = ''.join(meal)
     options.sort()
@@ -57,31 +65,6 @@ def parseOrder(unedited_order):
     for i in range(len(options)):
         edited_order.append(options[i])
 
-    # #collects tally of each options appearance and throws tally into the options index within edited_order
-    # current_option = 1
-    # tally = 0
-    # duplicates = 0                                                  # track duplicates so edited_order can be popped down
-    # for i in range(len(edited_order)):
-    #     if i != 0:
-    #         if current_option == edited_order[i]:
-    #             tally+=1
-    #             if tally > 1:
-    #                 duplicates+=1
-    #         else:
-    #             edited_order[current_option] = tally
-    #             tally = 1
-    #             current_option = edited_order[i]
-
-    # # update final tally
-    # if (len(edited_order)) > 1:
-    #     edited_order[current_option] = tally
-
-    #removes extra length of edited_order that previously contained duplicates for options
-    # j = 0
-    # while j < duplicates:
-    #     edited_order.pop()
-    #     j+=1
-
     return edited_order
 
 # --------------------------------------------------------------------------------------------------------
@@ -89,13 +72,16 @@ def validateOrder(order):
     valid_order = True
     print(order)
 
-    if order[1] != 1 or order[2] != 2:
-        valid_order =False
+    if len(order) < 3 or order[1] != 1 or order[2] != 2:
+        print("HERE1")
+        return 0
     if order[0] == "Breakfast":
-        if len(order) > 3 and order[3] != 3:
-            valid_order =False
+        if (len(order) > 3 and order[3] != 3) or '4' in order:
+            print("HERE2")
+            return 0
 
         order[3] = len(order) - 3                       # order[3] is coffee option, so place tally here
+        #print(order)
     elif order[0] == "Lunch":
         return True
     elif order[0] == "Dinner":
@@ -103,7 +89,11 @@ def validateOrder(order):
     else:
         valid_order = False
     
-    return valid_order
+    return order
+
+# --------------------------------------------------------------------------------------------------------
+def prepResponse(order):
+    return True
 
 if __name__ == '__main__':
     app.run(debug=True)
