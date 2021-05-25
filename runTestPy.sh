@@ -1,3 +1,5 @@
 #!/bin/bash
 
-python3 testFile.py
+sleep 5
+
+python3 test.py
