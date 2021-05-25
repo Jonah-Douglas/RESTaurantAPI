@@ -16,4 +16,4 @@ Known issues:
 3. My test cases are very much lacking. With another hour I would go about solving this issue by creating a randomized testfile generator so I could generate a few 100 lines of code, run them through my API and any tests that failed, flag and make sure they were failing under the right conditions.
 4. I did not get to use SQLAlchemy, I created a database for my demoAPI project but didn't have time to implement for this (I wanted to finish my request parser and validation before creating the database).
 
-Overall, fun project and I am pretty excited to say I completed my first API, albeit one that can use a bit of TLC ;)
+Overall, fun project and I am pretty excited to say I completed my first API, albeit one that can use a bit of TLC. ;)
